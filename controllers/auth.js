@@ -8,11 +8,13 @@ module.exports = {
 	login: async (req, res, next) => {
 		passport.authenticate('local',
 			{ successRedirect: '/', failureRedirect: '/login' }, (err, user, info) => {
-				console.log('info', info);
-				console.log('err, ', err);
 				if (info) return res.status(info.code || 401).send({ message: info.message });
 
-				return res.status(200).send({ user });
+				// return res.status(200).send({ user });
+				return req.logIn(user, (error) => {
+					if (error) return next(err);
+					return res.status(200).send({ user });
+				});
 			})(req, res, next);
 	},
 	register: async (req, res) => {

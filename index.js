@@ -10,7 +10,6 @@ const MongoStore = require('connect-mongo')(session);
 
 const { mongoDBUrl } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
-const User = require('./models/user');
 
 const app = express();
 
@@ -18,14 +17,6 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 require('./utils/passport')(passport);
-
-passport.serializeUser((user, done) => {
-	done(null, { id: user._id });
-});
-
-passport.deserializeUser((id, done) => {
-	User.findById(id, (err, user) => done(err, user));
-});
 
 mongoose.connect(
 	mongoDBUrl,
@@ -36,14 +27,12 @@ app.use(cookieParser());
 app.use(session({
 	secret: 'my-secret wqweqew',
 	resave: false,
-	saveUninitialized: true,
+	saveUninitialized: false,
 	name: 'sessionId',
 	cookie: {
-		httpOnly: true,
-		secure: false,
 		maxAge: 24 * 60 * 60 * 1000 * 7
-	}
-	// store: new MongoStore({ mongooseConnection: mongoose.connection })
+	},
+	store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 // body parser

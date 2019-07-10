@@ -22,4 +22,19 @@ module.exports = (passport) => {
 			return done(null, user);
 		});
 	}));
+	passport.serializeUser((user, done) => {
+		console.log('serializeUser', user);
+		done(null, { id: user._id });
+	});
+
+	passport.deserializeUser((id, done) => {
+		console.log('deserializeUser', id);
+		User.findById(id, (err, user) => {
+			if (err) {
+				return done(err);
+			}
+
+			return done(null, user);
+		});
+	});
 };
