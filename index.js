@@ -12,16 +12,7 @@ const { mongoDBUrl } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
 
 const app = express();
-
 app.use(cors({ credentials: true, origin: true }));
-app.use(passport.initialize());
-app.use(passport.session());
-require('./utils/passport')(passport);
-
-mongoose.connect(
-	mongoDBUrl,
-	{ useCreateIndex: true, useNewUrlParser: true }
-);
 
 app.use(cookieParser());
 app.use(session({
@@ -34,6 +25,15 @@ app.use(session({
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+require('./utils/passport')(passport);
+
+mongoose.connect(
+	mongoDBUrl,
+	{ useCreateIndex: true, useNewUrlParser: true }
+);
 
 // body parser
 app.use(bodyParser.urlencoded({ extended: false }));

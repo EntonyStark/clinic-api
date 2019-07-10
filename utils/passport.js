@@ -24,12 +24,12 @@ module.exports = (passport) => {
 	}));
 	passport.serializeUser((user, done) => {
 		console.log('serializeUser', user);
-		done(null, { id: user._id });
+		done(null, { _id: user._id });
 	});
 
-	passport.deserializeUser((id, done) => {
-		console.log('deserializeUser', id);
-		User.findById(id, (err, user) => {
+	passport.deserializeUser((_id, done) => {
+		console.log('deserializeUser', _id);
+		User.findById(_id, (err, user) => {
 			if (err) {
 				return done(err);
 			}
