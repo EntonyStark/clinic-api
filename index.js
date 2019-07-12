@@ -11,8 +11,18 @@ const MongoStore = require('connect-mongo')(session);
 const { mongoDBUrl, secretKey } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
 
+const urls = ['http://localhost:3000'];
+
 const app = express();
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: urls }));
+
+if (process.env.NODE_ENV === 'dev') {
+	app.use(morgan('dev'));
+}
+
+if (process.env.NODE_ENV === 'production') {
+	app.set('trust proxy', 1);
+}
 
 app.use(cookieParser());
 app.use(session({
@@ -21,6 +31,7 @@ app.use(session({
 	saveUninitialized: false,
 	name: 'sessionId',
 	cookie: {
+		secure: process.env.NODE_ENV === 'dev' ? false : true,
 		maxAge: 24 * 60 * 60 * 1000 * 7
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })
@@ -38,10 +49,6 @@ mongoose.connect(
 // body parser
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-if (process.env.NODE_ENV === 'dev') {
-	app.use(morgan('dev'));
-}
 
 // routes
 const auth = require('./routes/auth');

@@ -10,7 +10,11 @@ module.exports = {
 			{ successRedirect: '/', failureRedirect: '/login' }, (err, user, info) => {
 				if (info) return res.status(info.code || 401).send({ message: info.message });
 
-				// return res.status(200).send({ user });
+				res.cookie('user', JSON.stringify({ id: user._id }), {
+					secure: false,
+					httpOnly: false,
+					maxAge: 24 * 60 * 60 * 1000 * 7
+				});
 				return req.logIn(user, (error) => {
 					if (error) return next(err);
 					return res.status(200).send({ user });
