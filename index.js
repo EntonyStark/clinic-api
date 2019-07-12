@@ -35,8 +35,9 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false,
 	name: 'sessionId',
+	proxy: true,
 	cookie: {
-		secure: process.env.NODE_ENV === 'dev' ? false : true,
+		secure: !process.env.NODE_ENV === 'dev',
 		maxAge: 24 * 60 * 60 * 1000 * 7
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })

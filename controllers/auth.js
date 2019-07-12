@@ -48,5 +48,13 @@ module.exports = {
 			message: 'User was successfully register',
 			id: newUser._id
 		});
+	},
+	logOut: async (req, res) => {
+		req.session.destroy(() => {
+			res.clearCookie('sessionId');
+			res.clearCookie('user');
+
+			res.send({ logOut: true });
+		});
 	}
 };
