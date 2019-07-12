@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const enforce = require('express-sslify');
 
 const { mongoDBUrl, secretKey } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
@@ -28,7 +27,6 @@ if (process.env.NODE_ENV === 'dev') {
 
 if (process.env.NODE_ENV === 'production') {
 	app.set('trust proxy', 1);
-	app.use(enforce.HTTPS());
 }
 
 app.use(cookieParser());
@@ -40,7 +38,8 @@ app.use(session({
 	proxy: true,
 	cookie: {
 		secure: !process.env.NODE_ENV === 'dev',
-		maxAge: 24 * 60 * 60 * 1000 * 7
+		maxAge: 24 * 60 * 60 * 1000 * 7,
+		domain: 'localhost'
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
