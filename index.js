@@ -8,7 +8,7 @@ const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
-const { mongoDBUrl } = require('./config');
+const { mongoDBUrl, secretKey } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
 
 const app = express();
@@ -16,7 +16,7 @@ app.use(cors({ credentials: true, origin: true }));
 
 app.use(cookieParser());
 app.use(session({
-	secret: 'my-secret wqweqew',
+	secret: secretKey,
 	resave: false,
 	saveUninitialized: false,
 	name: 'sessionId',
