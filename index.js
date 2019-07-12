@@ -27,18 +27,17 @@ if (process.env.NODE_ENV === 'dev') {
 	app.use(morgan('dev'));
 }
 
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 app.use(cookieParser());
 app.use(session({
 	secret: secretKey,
 	resave: false,
 	saveUninitialized: false,
 	name: 'sessionId',
-	proxy: true,
+	// proxy: true,
 	cookie: {
-		secure: process.env.NODE_ENV === 'dev' ? false : true,
-		maxAge: 24 * 60 * 60 * 1000 * 7,
-		domain: '.heroku.com'
+		secure: false,
+		maxAge: 24 * 60 * 60 * 1000 * 7
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
