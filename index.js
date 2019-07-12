@@ -37,7 +37,7 @@ app.use(session({
 	name: 'sessionId',
 	proxy: true,
 	cookie: {
-		secure: !process.env.NODE_ENV === 'dev',
+		secure: process.env.NODE_ENV === 'dev' ? false : true,
 		maxAge: 24 * 60 * 60 * 1000 * 7,
 		domain: 'localhost'
 	},
