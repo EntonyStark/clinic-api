@@ -14,7 +14,12 @@ const { authenticationMiddleware } = require('./utils/help-func');
 const urls = ['http://localhost:3000'];
 
 const app = express();
-app.use(cors({ credentials: true, origin: urls }));
+app.use(cors({
+	credentials: true,
+	origin: urls,
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Forwarded-Proto', 'Cookie', 'Set-Cookie'],
+	exposedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Forwarded-Proto', 'Cookie', 'Set-Cookie']
+}));
 
 if (process.env.NODE_ENV === 'dev') {
 	app.use(morgan('dev'));
