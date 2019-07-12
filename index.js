@@ -38,8 +38,8 @@ app.use(session({
 	proxy: true,
 	cookie: {
 		secure: process.env.NODE_ENV === 'dev' ? false : true,
-		maxAge: 24 * 60 * 60 * 1000 * 7,
-		domain: 'localhost'
+		maxAge: 24 * 60 * 60 * 1000 * 7
+		// domain: 'localhost'
 	},
 	store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
