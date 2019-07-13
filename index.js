@@ -53,12 +53,12 @@ app.use(bodyParser.json());
 
 // routes
 const auth = require('./routes/auth');
-const test = require('./routes/test');
 const user = require('./routes/user');
+const services = require('./routes/services');
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', authenticationMiddleware, user);
-app.use('/api/v1', authenticationMiddleware, test);
+app.use('/api/v1/services', authenticationMiddleware, services);
 
 const PORT = process.env.PORT || 5000;
 
