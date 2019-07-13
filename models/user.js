@@ -25,7 +25,12 @@ const userSchema = new Schema({
 		required: true
 	},
 	role: {
-		type: Number,
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	doctor: {
+		type: Boolean,
 		required: true,
 		default: false
 	}

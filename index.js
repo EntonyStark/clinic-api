@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const secure = require('express-force-https');
 
 const { mongoDBUrl, secretKey } = require('./config');
 const { authenticationMiddleware } = require('./utils/help-func');
@@ -15,7 +14,6 @@ const { authenticationMiddleware } = require('./utils/help-func');
 const urls = ['http://localhost:3000'];
 
 const app = express();
-app.use(secure);
 app.use(cors({
 	credentials: true,
 	origin: urls,
@@ -27,14 +25,12 @@ if (process.env.NODE_ENV === 'dev') {
 	app.use(morgan('dev'));
 }
 
-// app.set('trust proxy', 1);
 app.use(cookieParser());
 app.use(session({
 	secret: secretKey,
 	resave: false,
 	saveUninitialized: false,
 	name: 'sessionId',
-	// proxy: true,
 	cookie: {
 		secure: false,
 		maxAge: 24 * 60 * 60 * 1000 * 7
@@ -58,8 +54,10 @@ app.use(bodyParser.json());
 // routes
 const auth = require('./routes/auth');
 const test = require('./routes/test');
+const user = require('./routes/user');
 
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', authenticationMiddleware, user);
 app.use('/api/v1', authenticationMiddleware, test);
 
 const PORT = process.env.PORT || 5000;
