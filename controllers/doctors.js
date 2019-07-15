@@ -69,7 +69,7 @@ module.exports = {
 			{ useFindAndModify: false }
 		));
 		if (err) return res.status(400).send({ message: err.message });
-		if (!doctor) return res.status(404).send({ message: 'Room not found' });
+		if (!doctor) return res.status(404).send({ message: 'Review not found' });
 
 		const [error, shedule] = await to(Shedule.find({ doctor: doctor._id }));
 		if (error) return res.status(400).send({ message: error.message });
