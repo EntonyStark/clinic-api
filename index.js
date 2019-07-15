@@ -57,12 +57,14 @@ const user = require('./routes/user');
 const services = require('./routes/services');
 const doctors = require('./routes/doctors');
 const shedule = require('./routes/shedule');
+const orders = require('./routes/orders');
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', authenticationMiddleware, user);
 app.use('/api/v1/services', authenticationMiddleware, services);
 app.use('/api/v1/doctors', authenticationMiddleware, doctors);
 app.use('/api/v1/shedule', authenticationMiddleware, shedule);
+app.use('/api/v1/orders', authenticationMiddleware, orders);
 
 const PORT = process.env.PORT || 5000;
 
