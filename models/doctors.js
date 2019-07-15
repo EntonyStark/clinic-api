@@ -30,6 +30,10 @@ const doctorsSchema = new Schema({
 	speciality: [{
 		type: Schema.Types.ObjectId,
 		ref: 'services'
+	}],
+	shedule: [{
+		type: Schema.Types.ObjectId,
+		ref: 'shedule'
 	}]
 }, { timestamps: true });
 

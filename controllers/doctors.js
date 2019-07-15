@@ -1,5 +1,6 @@
 const Doctor = require('../models/doctors');
 const User = require('../models/user');
+const Shedule = require('../models/shedule');
 const { to } = require('../utils/help-func');
 
 module.exports = {
@@ -7,21 +8,23 @@ module.exports = {
 		const [err, doctors] = await to(Doctor
 			.find({}, { __v: 0 })
 			.populate('user', { __v: 0, password: 0 })
-			.populate('speciality', { __v: 0 }));
+			.populate('speciality', { __v: 0 })
+			.populate('shedule', { __v: 0, doctor: 0 }));
 
 		if (err) return res.status(404).send({ message: err.message });
 
 		return res.status(200).send({ doctors });
 	},
 	getDoctorById: async (req, res) => {
-		const [err, service] = await to(Doctor
+		const [err, doctor] = await to(Doctor
 			.findById(req.params.id, { __v: 0 })
 			.populate('user', { __v: 0, password: 0 })
-			.populate('speciality', { __v: 0 }));
+			.populate('speciality', { __v: 0 })
+			.populate('shedule', { __v: 0, doctor: 0 }));
 
 		if (err) return res.status(404).send({ message: err.message });
 
-		return res.status(200).send({ service });
+		return res.status(200).send({ doctor });
 	},
 	createDoctor: async (req, res) => {
 		const {
@@ -67,6 +70,11 @@ module.exports = {
 		));
 		if (err) return res.status(400).send({ message: err.message });
 		if (!doctor) return res.status(404).send({ message: 'Room not found' });
+
+		const [error, shedule] = await to(Shedule.find({ doctor: doctor._id }));
+		if (error) return res.status(400).send({ message: error.message });
+
+		shedule.forEach(el => el.remove());
 
 		return res.status(200).send({ message: `${doctor.name} successfully removed` });
 	}
