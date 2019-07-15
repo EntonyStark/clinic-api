@@ -44,13 +44,13 @@ module.exports = {
 
 		return res.status(200).send({ service });
 	},
-	removeRoom: async (req, res) => {
+	removeService: async (req, res) => {
 		const [err, service] = await to(Service.findOneAndRemove(
 			{ _id: req.params.id },
 			{ useFindAndModify: false }
 		));
 		if (err) return res.status(400).send({ message: err.message });
-		if (!service) return res.status(404).send({ message: 'Room not found' });
+		if (!service) return res.status(404).send({ message: 'Service not found' });
 
 		return res.status(200).send({ message: `${service.name} successfully removed` });
 	}

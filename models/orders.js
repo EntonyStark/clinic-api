@@ -14,6 +14,10 @@ const ordersSchema = new Schema({
 	comment: {
 		type: String
 	},
+	shedule: {
+		type: Schema.Types.ObjectId,
+		ref: 'shedule'
+	},
 	doctor: {
 		type: Schema.Types.ObjectId,
 		ref: 'doctors'
