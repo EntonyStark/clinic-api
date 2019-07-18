@@ -56,7 +56,18 @@ module.exports = {
 		if (skillsDescription) doctor.skillsDescription = skillsDescription;
 		if (profession) doctor.profession = profession;
 		if (user || user === null) doctor.user = user;
-		if (speciality) doctor.speciality.push(speciality);
+		if (speciality) {
+			if (typeof speciality === 'string') {
+				doctor.speciality.push(speciality);
+			}
+			else if (Array.isArray(speciality)) {
+				const uniqueArray = [...new Set([
+					...speciality,
+					...doctor.speciality.map(el => String(el))
+				])];
+				doctor.speciality = uniqueArray;
+			}
+		}
 
 		const [e, updateDoctor] = await to(doctor.save());
 		if (e) return res.status(404).send({ message: e.message });
