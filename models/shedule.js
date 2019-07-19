@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const sheduleSchema = new Schema({
 	data: {
 		type: Date,
-		unique: true,
 		required: true
 	},
 	doctor: {

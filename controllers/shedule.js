@@ -13,14 +13,19 @@ module.exports = {
 		return res.status(200).send({ shedule });
 	},
 	createShedule: async (req, res) => {
+		const [e, currentDoctor] = await to(Doctor.findById({ _id: req.body.doctor }).populate('shedule'));
+		if (e) return res.status(404).send({ message: e.message });
+
+		const canAddDate = currentDoctor.shedule.some((el) => {
+			const sheduleDate = el.data.toJSON().split('T')[0];
+			return req.body.data === sheduleDate;
+		});
+		if (canAddDate) return res.status(404).send({ message: `${req.body.data} already exist in doctor shedule` });
+
 		const [err, shedule] = await to(new Shedule({ ...req.body }).save());
 		if (err) return res.status(404).send({ message: err.message });
 
-		const [e, currentDoctor] = await to(Doctor.findById({ _id: req.body.doctor }));
-		if (e) return res.status(404).send({ message: e.message });
-
 		currentDoctor.shedule.push(shedule);
-
 		await currentDoctor.save();
 
 		return res.status(200).send({ shedule });
