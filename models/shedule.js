@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const sheduleSchema = new Schema({
 	data: {
-		type: Date,
+		type: String,
 		required: true
 	},
 	doctor: {
