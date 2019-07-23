@@ -14,7 +14,7 @@ module.exports = {
 	},
 	createOrder: async (req, res) => {
 		const {
-			time, comment, spec, shedule, doctor
+			time, comment, spec, shedule, doctor, user
 		} = req.body;
 
 		const [e, service] = await to(Service.findById({ _id: spec }));
@@ -40,7 +40,7 @@ module.exports = {
 
 		await currentShedule.save();
 		const [error, order] = await to(new Order({
-			doctor, time, comment, spec, date: currentShedule.data, shedule
+			doctor, time, comment, spec, date: currentShedule.data, shedule, user
 		}).save());
 		if (error) return res.status(404).send({ message: error.message });
 
