@@ -27,17 +27,16 @@ module.exports = {
 		return res.status(200).send({ doctor });
 	},
 	createDoctor: async (req, res) => {
-		const {
-			experience, name, photo, profession, skillsDescription, speciality, user
-		} = req.body;
+		if (req.body.user) {
+			const [e, user] = await to(User.find({}, { __v: 0 }));
+			if (e) return res.status(404).send({ message: e.message });
 
-		const [e] = await to(User.findById(user));
-		if (e) return res.status(404).send({ message: e.message });
-		if (user && !user.doctor) return res.status(404).send({ message: 'User not a doctor' });
+			user.doctor = true;
 
-		const [err, doctors] = await to(new Doctor({
-			name, photo, experience, profession, skillsDescription, speciality, user
-		}).save());
+			await user.save();
+		}
+
+		const [err, doctors] = await to(new Doctor(req.body).save());
 		if (err) return res.status(404).send({ message: err.message });
 
 		return res.status(200).send({ doctors });
