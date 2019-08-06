@@ -19,6 +19,10 @@ const servicesSchema = new Schema({
 	price: {
 		required: true,
 		type: Number
+	},
+	category: {
+		type: Schema.Types.ObjectId,
+		ref: 'category'
 	}
 }, { timestamps: true });
 

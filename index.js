@@ -9,7 +9,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 const { mongoDBUrl, secretKey } = require('./config');
-const { authenticationMiddleware } = require('./utils/help-func');
 
 const urls = ['http://localhost:3000'];
 
@@ -59,14 +58,16 @@ const doctors = require('./routes/doctors');
 const shedule = require('./routes/shedule');
 const orders = require('./routes/orders');
 const reviews = require('./routes/reviews');
+const category = require('./routes/category');
 
 app.use('/api/v1/auth', auth);
-app.use('/api/v1/users', authenticationMiddleware, user);
-app.use('/api/v1/services', authenticationMiddleware, services);
-app.use('/api/v1/doctors', authenticationMiddleware, doctors);
-app.use('/api/v1/shedule', authenticationMiddleware, shedule);
-app.use('/api/v1/orders', authenticationMiddleware, orders);
-app.use('/api/v1/reviews', authenticationMiddleware, reviews);
+app.use('/api/v1/users', user);
+app.use('/api/v1/services', services);
+app.use('/api/v1/doctors', doctors);
+app.use('/api/v1/shedule', shedule);
+app.use('/api/v1/orders', orders);
+app.use('/api/v1/reviews', reviews);
+app.use('/api/v1/category', category);
 
 const PORT = process.env.PORT || 5000;
 
