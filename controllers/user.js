@@ -6,7 +6,7 @@ const { to } = require('../utils/help-func');
 
 module.exports = {
 	getUserList: async (req, res) => {
-		const [err, users] = await to(User.find({}, { password: 0, __v: 0 }));
+		const [err, users] = await to(User.find(req.query, { password: 0, __v: 0 }));
 
 		if (err) return res.status(404).send({ message: err.message });
 
