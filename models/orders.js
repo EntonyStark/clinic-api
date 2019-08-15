@@ -29,6 +29,9 @@ const ordersSchema = new Schema({
 	spec: {
 		type: Schema.Types.ObjectId,
 		ref: 'services'
+	},
+	orderNumber: {
+		type: Number
 	}
 }, { timestamps: true });
 

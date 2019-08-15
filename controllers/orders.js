@@ -3,7 +3,15 @@ const Service = require('../models/services');
 const Shedule = require('../models/shedule');
 const { to } = require('../utils/help-func');
 
-const { timeTable } = require('../config/constants');
+const { timeTable, orderNumberStart } = require('../config/constants');
+
+const gen = (current, last) => {
+	if (!current && !last) return orderNumberStart;
+
+	if (!current && last) return last + 1;
+
+	return current;
+};
 
 module.exports = {
 	getOrderList: async (req, res) => {
@@ -14,37 +22,46 @@ module.exports = {
 	},
 	createOrder: async (req, res) => {
 		const {
-			time, comment, spec, shedule, doctor, user
+			time, comment, spec, shedule, doctor, user, orderNumber
 		} = req.body;
 
-		const [e, service] = await to(Service.findById({ _id: spec }));
-		if (e) return res.status(404).send({ message: e.message });
+		try {
+			const service = await Service.findById({ _id: spec });
 
-		const i = timeTable.findIndex(el => el === time);
-		if (i === -1) return res.status(404).send({ message: 'Incorrect time field' });
+			const i = timeTable.findIndex(el => el === time);
+			if (i === -1) throw new Error('Incorrect time field');
 
-		const lastI = timeTable[i + service.duration - 1];
-		if (!lastI) return res.status(404).send({ message: 'Not Work Time' });
+			const lastI = timeTable[i + service.duration - 1];
+			if (!lastI) throw new Error('Not Work Time');
 
-		const [err, currentShedule] = await to(Shedule.findById({ _id: shedule }));
-		if (err) return res.status(404).send({ message: err.message });
-		if (!currentShedule) return res.status(404).send({ message: 'Not Found Shedule' });
+			const currentShedule = await Shedule.findById({ _id: shedule });
+			if (!currentShedule) throw new Error('Not Found Shedule');
 
-		if (currentShedule[time] === false) return res.status(404).send({ message: 'Time not free' });
+			if (currentShedule[time] === false) throw new Error('Time not free');
 
-		const workTime = timeTable.slice(i, i + service.duration);
+			const workTime = timeTable.slice(i, i + service.duration);
+			workTime.forEach((el) => {
+				currentShedule[el] = false;
+			});
+			await currentShedule.save();
 
-		workTime.forEach((el) => {
-			currentShedule[el] = false;
-		});
+			const lastOrderNumber = await Order.findOne().sort({ orderNumber: -1 });
+			const order = await new Order({
+				doctor,
+				time,
+				comment,
+				spec,
+				date: currentShedule.data,
+				shedule,
+				user,
+				orderNumber: gen(orderNumber, lastOrderNumber)
+			}).save();
 
-		await currentShedule.save();
-		const [error, order] = await to(new Order({
-			doctor, time, comment, spec, date: currentShedule.data, shedule, user
-		}).save());
-		if (error) return res.status(404).send({ message: error.message });
-
-		return res.status(200).send({ order });
+			return res.status(200).send({ order });
+		}
+		catch (error) {
+			return res.status(404).send({ message: error.message });
+		}
 	},
 	updateOrder: async (req, res) => {
 		const { comment } = req.body;
