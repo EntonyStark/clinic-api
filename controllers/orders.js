@@ -46,6 +46,8 @@ module.exports = {
 			await currentShedule.save();
 
 			const lastOrderNumber = await Order.findOne().sort({ orderNumber: -1 });
+			const generateOrderNumber = gen(orderNumber, lastOrderNumber);
+			console.log('generateOrderNumber', generateOrderNumber);
 			const order = await new Order({
 				doctor,
 				time,
@@ -54,7 +56,7 @@ module.exports = {
 				date: currentShedule.data,
 				shedule,
 				user,
-				orderNumber: gen(orderNumber, lastOrderNumber)
+				orderNumber: generateOrderNumber
 			}).save();
 
 			return res.status(200).send({ order });

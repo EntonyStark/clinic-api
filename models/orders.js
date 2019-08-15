@@ -31,7 +31,8 @@ const ordersSchema = new Schema({
 		ref: 'services'
 	},
 	orderNumber: {
-		type: Number
+		type: Number,
+		required: true
 	}
 }, { timestamps: true });
 
