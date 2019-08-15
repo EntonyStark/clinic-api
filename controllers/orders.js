@@ -8,7 +8,7 @@ const { timeTable, orderNumberStart } = require('../config/constants');
 const gen = (current, last) => {
 	if (!current && !last) return orderNumberStart;
 
-	if (!current && last) return last + 1;
+	if (!current && last) return last.orderNumber + 1;
 
 	return current;
 };
@@ -46,8 +46,6 @@ module.exports = {
 			await currentShedule.save();
 
 			const lastOrderNumber = await Order.findOne().sort({ orderNumber: -1 });
-			const generateOrderNumber = gen(orderNumber, lastOrderNumber);
-			console.log('generateOrderNumber', generateOrderNumber);
 			const order = await new Order({
 				doctor,
 				time,
@@ -56,7 +54,7 @@ module.exports = {
 				date: currentShedule.data,
 				shedule,
 				user,
-				orderNumber: generateOrderNumber
+				orderNumber: gen(orderNumber, lastOrderNumber)
 			}).save();
 
 			return res.status(200).send({ order });
