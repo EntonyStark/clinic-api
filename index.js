@@ -10,7 +10,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const { mongoDBUrl, secretKey } = require('./config');
 
-const urls = ['http://localhost:3000'];
+const urls = ['http://localhost:3000', 'https://team-app-fea12-mbs.herokuapp.com'];
 
 const app = express();
 app.use(cors({
