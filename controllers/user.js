@@ -49,7 +49,7 @@ module.exports = {
 			if (!req.user.role) return res.status(403).send({ message: 'Permission denied.' });
 			user.role = role;
 		}
-		if (doctor) user.doctor = doctor;
+		if (doctor !== undefined) user.doctor = doctor;
 
 		const [err] = await to(user.save());
 
